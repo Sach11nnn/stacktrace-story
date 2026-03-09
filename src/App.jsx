@@ -20,6 +20,8 @@ function App() {
     const [storyTitle, setStoryTitle] = useState('');
     const [stackTrace, setStackTrace] = useState('');
     const [imageUrl, setImageUrl] = useState('');
+    const [imageKeywords, setImageKeywords] = useState('');
+    const [imageLoading, setImageLoading] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [recentStories, setRecentStories] = useState([]);
@@ -67,6 +69,7 @@ function App() {
         setStory('');
         setStoryTitle('');
         setImageUrl('');
+        setImageLoading(false);
         setStackTrace(trace);
 
         try {
@@ -75,9 +78,11 @@ function App() {
             setStory(generatedStory);
             setStoryTitle(title);
 
-            // Generate image from keywords
-            const keywords = extractKeywords(trace, generatedStory);
+            // Generate image — set URL directly, let StoryCard handle load/error
+            const keywords = extractKeywords(trace);
             const imgUrl = getPollinationsUrl(keywords);
+            setImageKeywords(keywords);
+            setImageLoading(true);
             setImageUrl(imgUrl);
 
             // Save to Firestore
@@ -139,7 +144,12 @@ function App() {
                     story={story}
                     stackTrace={stackTrace}
                     imageUrl={imageUrl}
+                    imageLoading={imageLoading}
                     title={storyTitle}
+                    onRegenerateImage={() => {
+                        const newUrl = getPollinationsUrl(imageKeywords);
+                        setImageUrl(newUrl);
+                    }}
                 />
 
                 <RecentStories

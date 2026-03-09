@@ -1,10 +1,29 @@
-import { useState } from 'react';
-import { FiCopy, FiShare2, FiCheck } from 'react-icons/fi';
+import { useState, useEffect } from 'react';
+import { FiCopy, FiShare2, FiCheck, FiLoader, FiRefreshCw } from 'react-icons/fi';
 
-export default function StoryCard({ story, stackTrace, imageUrl, title }) {
+export default function StoryCard({ story, stackTrace, imageUrl, imageLoading, onImageLoaded, onRegenerateImage, title }) {
     const [copied, setCopied] = useState(false);
+    const [imgLoaded, setImgLoaded] = useState(false);
+    const [imgError, setImgError] = useState(false);
+
+    // Reset image state when a new imageUrl comes in
+    useEffect(() => {
+        setImgLoaded(false);
+        setImgError(false);
+    }, [imageUrl]);
 
     if (!story) return null;
+
+    const handleImageLoad = () => {
+        setImgLoaded(true);
+        if (onImageLoaded) onImageLoaded();
+    };
+
+    const handleImageError = (e) => {
+        e.target.style.display = 'none';
+        setImgError(true);
+        if (onImageLoaded) onImageLoaded();
+    };
 
     const handleCopy = async () => {
         try {
@@ -78,15 +97,32 @@ export default function StoryCard({ story, stackTrace, imageUrl, title }) {
     return (
         <div className="story-card fade-in">
             {/* Cinematic banner image */}
-            {imageUrl && (
+            {imageUrl && !imgError && (
                 <div className="story-image-wrapper">
+                    {!imgLoaded && (
+                        <div className="image-spinner-overlay">
+                            <FiLoader className="spin" />
+                            <span>Generating cinematic poster...</span>
+                        </div>
+                    )}
                     <img
                         src={imageUrl}
                         alt="Cinematic story banner"
                         className="story-image"
-                        onError={(e) => { e.target.style.display = 'none'; }}
+                        style={{ opacity: imgLoaded ? 1 : 0, transition: 'opacity 0.5s ease' }}
+                        onLoad={handleImageLoad}
+                        onError={handleImageError}
                     />
-                    <div className="story-image-overlay" />
+                    {imgLoaded && <div className="story-image-overlay" />}
+                    {imgLoaded && onRegenerateImage && (
+                        <button
+                            className="regenerate-btn"
+                            onClick={onRegenerateImage}
+                            title="Generate new image"
+                        >
+                            <FiRefreshCw />
+                        </button>
+                    )}
                 </div>
             )}
 

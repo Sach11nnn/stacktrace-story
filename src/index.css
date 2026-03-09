@@ -426,11 +426,70 @@ body {
   overflow: hidden;
 }
 
+.story-image-wrapper.image-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.image-spinner,
+.image-spinner-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.image-spinner-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 0, 0, 0.7);
+  z-index: 2;
+}
+
+.image-spinner svg,
+.image-spinner-overlay svg {
+  font-size: 1.5rem;
+  color: var(--gold);
+}
+
 .story-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+.regenerate-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 5;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  color: var(--text-secondary);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s var(--ease-out);
+}
+
+.regenerate-btn:hover {
+  background: rgba(220, 38, 38, 0.7);
+  border-color: rgba(220, 38, 38, 0.5);
+  color: white;
+  box-shadow: 0 0 20px rgba(220, 38, 38, 0.4);
+  transform: rotate(90deg);
 }
 
 .story-image-overlay {

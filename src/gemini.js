@@ -63,29 +63,24 @@ export async function generateStory(errorText, language = 'en') {
     return data.choices[0].message.content;
 }
 
-export function extractKeywords(errorText, story) {
-    // Extract meaningful keywords for image generation
-    const combined = errorText + ' ' + (story || '');
+export function extractKeywords(errorText) {
+    const text = errorText.toLowerCase();
 
-    // Common programming terms to look for
     const techTerms = [
         'null', 'undefined', 'crash', 'error', 'exception', 'overflow', 'memory',
-        'timeout', 'network', 'database', 'server', 'compilation', 'runtime',
-        'syntax', 'type', 'reference', 'permission', 'denied', 'fatal',
-        'segfault', 'deadlock', 'race condition', 'stack overflow', 'heap',
-        'connection', 'refused', 'broken', 'failed', 'missing', 'corrupt'
+        'timeout', 'network', 'database', 'server', 'runtime', 'syntax', 'type',
+        'reference', 'permission', 'fatal', 'segfault', 'deadlock', 'stack',
+        'connection', 'refused', 'broken', 'failed', 'missing', 'corrupt',
+        'module', 'import', 'async', 'promise', 'render', 'component'
     ];
 
-    const found = techTerms.filter(term =>
-        combined.toLowerCase().includes(term)
-    ).slice(0, 3);
-
-    // Build a cinematic prompt
-    const baseKeywords = found.length > 0 ? found.join(' ') : 'programming error';
-    return `dramatic cinematic dark thriller movie poster, ${baseKeywords}, digital code, neon red glow, cinematic lighting, dark atmosphere, 8k`;
+    const found = techTerms.filter(term => text.includes(term)).slice(0, 5);
+    const keywords = found.length > 0 ? found.join(' ') : 'programming bug code';
+    return keywords;
 }
 
 export function getPollinationsUrl(keywords) {
-    const encoded = encodeURIComponent(keywords);
-    return `https://image.pollinations.ai/prompt/${encoded}?width=800&height=400&nologo=true`;
+    const imagePrompt = encodeURIComponent(`cinematic dramatic scene ${keywords}`);
+    return `https://image.pollinations.ai/prompt/${imagePrompt}?width=800&height=400&nologo=true&seed=${Date.now()}`;
 }
+
