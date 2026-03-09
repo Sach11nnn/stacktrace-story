@@ -30,7 +30,7 @@ what went wrong — in English or Hindi!
 See .env.example for required variables
 
 ## Live Demo
-stacktrace-story.vercel.app
+https://stacktrace-story.vercel.app/
 
 ## Author
 Sachin Rajawat
